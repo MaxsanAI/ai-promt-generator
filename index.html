@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Prompt Architect Ultimate</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { background: #020617; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .tag-btn { transition: all 0.2s; cursor: pointer; border: 1px solid #1e293b; background: #0f172a; }
+        .tag-active { background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important; border-color: transparent !important; color: white !important; }
+        .history-card { background: rgba(255, 255, 255, 0.03); border-left: 4px solid #3b82f6; }
+        .gradient-text { background: linear-gradient(to right, #60a5fa, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    </style>
+</head>
+<body class="p-4 md:p-10 pb-20">
+
+    <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-extrabold mb-2 gradient-text">Prompt Architect Pro</h1>
+            <p id="ui-subtitle" class="text-slate-400 text-sm italic">Mastering AI generation...</p>
+        </div>
+
+        <div class="glass p-6 rounded-3xl mb-8 sticky top-4 z-50 shadow-2xl">
+            <label id="ui-label-final" class="block text-[10px] uppercase tracking-[3px] text-blue-400 mb-2 font-bold">PROMPT</label>
+            <div id="finalPrompt" class="text-lg mb-4 min-h-[50px] font-medium text-slate-100 italic">...</div>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <button id="ui-copy-btn" onclick="copyPrompt()" class="bg-gradient-to-r from-blue-600 to-blue-700 py-3 rounded-xl font-bold transition-all active:scale-95 shadow-lg">Copy 📋</button>
+                <button id="ui-save-btn" onclick="saveToHistory()" class="bg-gradient-to-r from-purple-600 to-purple-700 py-3 rounded-xl font-bold transition-all active:scale-95 shadow-lg">Save ⭐</button>
+            </div>
+        </div>
+
+        <div class="grid gap-6">
+            <div class="glass p-5 rounded-2xl">
+                <h3 id="ui-h-subject" class="font-bold mb-3 text-blue-400">Subject</h3>
+                <input type="text" id="subject" class="w-full bg-slate-900 border border-slate-700 p-4 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none" oninput="updatePreview()">
+            </div>
+
+            <div class="glass p-5 rounded-2xl">
+                <h3 id="ui-h-style" class="font-bold mb-3 text-purple-400">Style & FX</h3>
+                <div class="flex flex-wrap gap-2">
+                    <div class="tag-btn px-4 py-2 rounded-xl text-xs" onclick="toggleTag(this, 'style', 'Cinematic Panavision')">Cinematic</div>
+                    <div class="tag-btn px-4 py-2 rounded-xl text-xs" onclick="toggleTag(this, 'style', 'Hyper-realistic 8k')">Realistic</div>
+                    <div class="tag-btn px-4 py-2 rounded-xl text-xs" onclick="toggleTag(this, 'style', 'Cyberpunk Neon')">Cyberpunk</div>
+                    <div class="tag-btn px-4 py-2 rounded-xl text-xs" onclick="toggleTag(this, 'style', 'Unreal Engine 5 Render')">UE5</div>
+                </div>
+            </div>
+
+            <div class="mt-10">
+                <h3 id="ui-h-history" class="text-xl font-bold mb-4 flex items-center gap-2">
+                    History <span class="text-xs bg-slate-700 px-2 py-1 rounded">Local Storage</span>
+                </h3>
+                <div id="historyList" class="grid gap-3">
+                    </div>
+                <button id="ui-clear-btn" onclick="clearHistory()" class="mt-4 text-xs text-slate-500 underline">Clear all history</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const userLang = (navigator.language || navigator.userLanguage).split('-')[0];
+        
+        const langData = {
+            en: { subtitle: "Professional AI Generator Tool", labelFinal: "Your Final Prompt", copyBtn: "Copy 📋", saveBtn: "Save ⭐", hSubject: "1. Subject", hStyle: "2. Style", hHistory: "Recent Prompts", wait: "Type something...", alertCopy: "Copied!", alertSave: "Saved to history!", clear: "Clear all history" },
+            sr: { subtitle: "Profesionalni alat za AI", labelFinal: "Tvoj Finalni Prompt", copyBtn: "Kopiraj 📋", saveBtn: "Sačuvaj ⭐", hSubject: "1. Subjekat", hStyle: "2. Stilovi", hHistory: "Istorija promptova", wait: "Upiši nešto...", alertCopy: "Kopirano!", alertSave: "Sačuvano u istoriju!", clear: "Obriši istoriju" },
+            es: { subtitle: "Herramienta de IA", labelFinal: "Prompt Final", copyBtn: "Copiar 📋", saveBtn: "Guardar ⭐", hSubject: "1. Sujeto", hStyle: "2. Estilos", hHistory: "Historial", wait: "Escribe algo...", alertCopy: "¡Copiado!", alertSave: "¡Guardado!", clear: "Borrar historial" }
+            // Možeš dodati još jezika po istom šablonu
+        };
+
+        const t = langData[userLang] || langData.en;
+
+        // UI Initialization
+        document.getElementById('ui-subtitle').innerText = t.subtitle;
+        document.getElementById('ui-label-final').innerText = t.labelFinal;
+        document.getElementById('ui-copy-btn').innerText = t.copyBtn;
+        document.getElementById('ui-save-btn').innerText = t.saveBtn;
+        document.getElementById('ui-h-subject').innerText = t.hSubject;
+        document.getElementById('ui-h-style').innerText = t.hStyle;
+        document.getElementById('ui-h-history').innerText = t.hHistory;
+        document.getElementById('ui-clear-btn').innerText = t.clear;
+        document.getElementById('finalPrompt').innerText = t.wait;
+
+        let config = { subject: "", style: [] };
+        let history = JSON.parse(localStorage.getItem('prompt_history')) || [];
+
+        function updatePreview() {
+            config.subject = document.getElementById('subject').value;
+            let final = config.subject || t.wait;
+            if(config.style.length > 0) final += ", " + config.style.join(", ");
+            document.getElementById('finalPrompt').innerText = final;
+        }
+
+        function toggleTag(el, category, value) {
+            el.classList.toggle('tag-active');
+            let index = config[category].indexOf(value);
+            if(index > -1) config[category].splice(index, 1);
+            else config[category].push(value);
+            updatePreview();
+        }
+
+        function copyPrompt() {
+            navigator.clipboard.writeText(document.getElementById('finalPrompt').innerText);
+            alert(t.alertCopy);
+        }
+
+        // HISTORY LOGIC
+        function saveToHistory() {
+            const current = document.getElementById('finalPrompt').innerText;
+            if(current === t.wait) return;
+            
+            history.unshift(current); // Dodaj na početak
+            if(history.length > 10) history.pop(); // Drži max 10
+            
+            localStorage.setItem('prompt_history', JSON.stringify(history));
+            renderHistory();
+            alert(t.alertSave);
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('historyList');
+            list.innerHTML = history.map(p => `
+                <div class="history-card p-4 rounded-xl text-sm text-slate-300 flex justify-between items-center">
+                    <span class="truncate mr-4">${p}</span>
+                    <button onclick="copySpecific('${p}')" class="text-blue-400 font-bold">Copy</button>
+                </div>
+            `).join('');
+        }
+
+        function copySpecific(text) {
+            navigator.clipboard.writeText(text);
+            alert(t.alertCopy);
+        }
+
+        function clearHistory() {
+            history = [];
+            localStorage.removeItem('prompt_history');
+            renderHistory();
+        }
+
+        renderHistory(); // Pozovi pri učitavanju
+    </script>
+</body>
+</html>
