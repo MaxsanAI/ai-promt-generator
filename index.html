@@ -3,176 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Prompt Architect Pro</title>
+    <title>AI Prompt Architect Ultimate Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
     <style>
-        body { background: #020617; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .magic-btn { background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899); }
-        .history-card { background: rgba(255, 255, 255, 0.05); border-radius: 16px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); transition: all 0.2s; }
-        .history-card:active { background: rgba(255, 255, 255, 0.1); }
-        button:active { transform: scale(0.96); opacity: 0.9; }
+        body { background: #020617; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .category-scroll::-webkit-scrollbar { display: none; }
+        .cat-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); white-space: nowrap; border: 1px solid rgba(255,255,255,0.05); }
+        .cat-active { background: linear-gradient(135deg, #3b82f6, #2563eb) !important; border-color: #60a5fa !important; transform: scale(1.05); box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
+        .magic-btn { background: linear-gradient(135deg, #3b82f6, #8b5cf6, #d946ef); position: relative; overflow: hidden; }
+        .magic-btn::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: rgba(255,255,255,0.1); transform: rotate(45deg); transition: 0.5s; }
+        .magic-btn:active::after { left: 120%; }
         input { font-size: 16px !important; }
-        .gradient-text { background: linear-gradient(to right, #60a5fa, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .history-card { background: rgba(255, 255, 255, 0.02); border-left: 3px solid #3b82f6; transition: 0.2s; }
+        .history-card:active { background: rgba(255, 255, 255, 0.08); }
+        .neon-text { text-shadow: 0 0 10px rgba(96, 165, 250, 0.5); }
     </style>
 </head>
-<body class="p-4 pb-12">
+<body class="p-4 pb-20">
 
     <div class="max-w-md mx-auto">
-        <div class="text-center mt-4 mb-6">
-            <h1 class="text-3xl font-extrabold gradient-text">PROMPT ARCHITECT</h1>
-            <p id="ui-subtitle" class="text-slate-500 text-[10px] tracking-[3px] uppercase mt-1">Professional Generator</p>
-        </div>
-
-        <div class="glass p-6 rounded-[2.5rem] mb-6 shadow-2xl border-t border-white/20">
-            <div id="finalPrompt" class="text-xl mb-8 min-h-[120px] leading-snug font-semibold text-slate-100 italic">
-                Waiting for magic...
+        <div class="flex justify-between items-center mt-2 mb-8 px-2">
+            <div>
+                <h1 class="text-2xl font-extrabold tracking-tight neon-text italic">PROMPT <span class="text-blue-500 text-3xl italic">PRO</span></h1>
+                <p class="text-[10px] text-slate-500 font-bold tracking-[3px] uppercase">Ultimate AI Generator</p>
             </div>
-            
-            <div class="grid grid-cols-1 gap-4">
-                <button onclick="magicGenerate()" class="magic-btn w-full py-5 rounded-2xl font-black text-xl shadow-lg uppercase tracking-wider text-white">Magic Generate ✨</button>
-                <button onclick="copyPrompt()" class="bg-slate-800 w-full py-4 rounded-2xl font-bold text-lg border border-slate-700 text-slate-200">Copy Result 📋</button>
+            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center shadow-lg">
+                <span class="text-xs font-black italic">GEN</span>
             </div>
         </div>
 
-        <div class="glass p-5 rounded-2xl mb-8">
-            <label id="ui-h-input" class="block text-xs font-bold text-blue-400 mb-3 uppercase tracking-widest">Main Concept</label>
-            <input type="text" id="userInput" placeholder="Enter word..." 
-            class="w-full bg-slate-900/80 border border-slate-700 p-5 rounded-xl text-white outline-none focus:border-purple-500 shadow-inner">
+        <div class="glass p-7 rounded-[2.5rem] mb-8 border-t border-white/10 relative overflow-hidden text-center">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-50"></div>
+            <div id="finalPrompt" class="text-lg mb-8 min-h-[120px] leading-relaxed font-semibold text-slate-100 transition-all duration-500 ease-out">
+                Ready to create? Enter a concept below and pick a style.
+            </div>
+            <div class="grid grid-cols-1 gap-3">
+                <button onclick="copyPrompt()" class="w-full bg-white/5 py-4 rounded-2xl font-bold text-sm border border-white/10 active:bg-white/10 transition">Copy to Clipboard 📋</button>
+            </div>
         </div>
+
+        <div class="mb-8 relative">
+            <label class="text-[10px] uppercase font-bold text-blue-400 mb-3 ml-4 tracking-widest block">Main Subject</label>
+            <input type="text" id="userInput" placeholder="e.g. Cyberpunk Samurai, Dreamy Girl..." 
+            class="w-full bg-slate-900/50 border border-slate-800 p-5 rounded-3xl text-white outline-none focus:border-blue-500 shadow-2xl placeholder:text-slate-600">
+        </div>
+
+        <div class="mb-8">
+            <label class="text-[10px] uppercase font-bold text-purple-400 mb-4 ml-4 tracking-widest block">Select Engine Style</label>
+            <div class="category-scroll flex overflow-x-auto gap-3 pb-4">
+                <button onclick="setCategory('cyber', this)" class="cat-btn cat-active px-6 py-3 rounded-2xl bg-slate-900 text-xs font-bold uppercase tracking-tighter">🚀 Cyber</button>
+                <button onclick="setCategory('nature', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-900 text-xs font-bold uppercase tracking-tighter">🌸 Nature</button>
+                <button onclick="setCategory('cinema', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-900 text-xs font-bold uppercase tracking-tighter">🎬 Cinema</button>
+                <button onclick="setCategory('anime', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-900 text-xs font-bold uppercase tracking-tighter">⛩️ Anime</button>
+                <button onclick="setCategory('logo', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-900 text-xs font-bold uppercase tracking-tighter">💎 Logo</button>
+                <button onclick="setCategory('gaming', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-900 text-xs font-bold uppercase tracking-tighter">🎮 Gaming</button>
+                <button onclick="setCategory('fashion', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-900 text-xs font-bold uppercase tracking-tighter">👗 Fashion</button>
+                <button onclick="setCategory('horror', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-900 text-xs font-bold uppercase tracking-tighter">💀 Horror</button>
+            </div>
+        </div>
+
+        <button onclick="magicGenerate()" class="magic-btn w-full py-6 rounded-[2rem] font-black text-xl shadow-2xl uppercase tracking-widest text-white mb-12 transform hover:translate-y-[-2px] transition active:scale-95">
+            Generate Magic ✨
+        </button>
 
         <div id="historyBox" class="hidden">
-            <div class="flex justify-between items-center mb-4 px-2">
-                <h3 id="ui-h-history" class="text-slate-400 text-sm font-bold uppercase tracking-widest text-xs">Recent Masterpieces</h3>
-                <button onclick="clearAll()" class="text-[10px] text-red-500 font-bold uppercase p-2">Clear All</button>
+            <div class="flex justify-between items-center mb-6 px-4">
+                <span class="text-[10px] font-black text-slate-500 uppercase tracking-[4px]">Recent Archive</span>
+                <button onclick="clearAll()" class="text-[10px] text-red-500 font-black uppercase tracking-widest">Wipe All</button>
             </div>
-            <div id="historyList">
-                </div>
+            <div id="historyList" class="space-y-3"></div>
         </div>
     </div>
 
     <script>
-        // PUN MASIVNI REČNIK IZ PRETHODNIH KORAKA
+        let currentCategory = 'cyber';
+
         const db = {
-            actions: [
-                "exploring ancient neon ruins in a deep digital jungle", "floating in a zero-gravity botanical sanctuary",
-                "walking through a heavy futuristic rainstorm in Neo-Tokyo", "surrounded by swirling ethereal spirits and magic dust",
-                "standing on the edge of a cosmic black hole horizon", "dissolving into a million glowing digital butterflies",
-                "captured in a moment of extreme kinetic energy and speed", "meditating inside a giant crystal cathedral",
-                "sprinting through a steampunk industrial city at sunset", "melting into a pool of liquid iridescent chrome",
-                "shrouded in mysterious volumetric fog and cinematic shadows", "performing an ancient ritual with glowing embers",
-                "flying through a nebula made of liquid silk and stars", "emerging from a 90s vintage television glitch screen",
-                "submerged in a high-tech underwater laboratory", "frozen in time during a massive explosion of neon flowers"
-            ],
-            styles: [
-                "Unreal Engine 5.4 photorealistic render", "8k UHD cinematic film scan, Kodak Portra 400",
-                "Studio Ghibli aesthetic, lush hand-painted scenery", "Cyberpunk 2077 neon-noir aesthetic",
-                "Intricate dark fantasy, oil on canvas, Greg Rutkowski style", "Minimalist 3D isometric vector art",
-                "Anamorphic widescreen cinematography, 35mm lens", "Hyper-detailed claymation and stop-motion style",
-                "Surrealist masterpiece by Salvador Dali", "Retro-futurism, 1950s pulp sci-fi magazine cover",
-                "National Geographic documentary style, raw footage", "Futuristic architecture, Zaha Hadid style",
-                "Glitch art, VHS aesthetic, vaporwave colors", "Renaissance marble sculpture, dramatic lighting"
-            ],
-            lighting: [
-                "golden hour sunlight with natural lens flare", "cinematic rim lighting, high contrast noir",
-                "bioluminescent glow from organic neon sources", "soft diffused high-end studio lighting",
-                "dramatic top-down moody cinematic shadows", "volumetric sunbeams filtering through dust particles",
-                "neon pink and cyan dual lighting setup", "underwater caustic light reflections",
-                "warm flickering candlelight with deep shadows"
-            ],
-            cameras: [
-                "shot on IMAX 70mm camera", "GoPro POV wide angle action shot", "low angle heroic cinematic perspective",
-                "extreme close-up macro photography", "drone footage from 400ft altitude", "35mm vintage film photography"
-            ]
+            cyber: {
+                act: ["connected to a bio-digital mainframe", "walking through a glitching neon marketplace", "riding a hover-bike in high-speed neo-tokyo", "surrounded by floating holographic advertisements"],
+                sty: ["Cyberpunk 2077 aesthetic", "Hyper-detailed synthwave art", "Futuristic neon-noir cinematic", "Blade Runner 2049 visual style"],
+                lgt: ["flickering neon pink and electric blue lighting", "volumetric laser fog", "harsh artificial night shadows"],
+                tech: "--ar 21:9 --v 6.0 --style raw --chaos 10"
+            },
+            nature: {
+                act: ["surrounded by bioluminescent spirit animals", "meditating under a giant glowing willow tree", "walking through a field of crystal-flowers", "drifting in a peaceful ethereal forest lake"],
+                sty: ["Dreamy fantasy landscape", "Studio Ghibli lush scenery", "Kodak Portra 400 soft photography", "Ethereal oil painting style"],
+                lgt: ["warm golden hour sunbeams", "soft diffused morning mist", "magical floating particles lighting"],
+                tech: "--ar 3:2 --v 6.0 --stylize 400"
+            },
+            cinema: {
+                act: ["in a high-stakes dramatic encounter", "captured in a wide-angle heroic stance", "shrouded in mysterious cinematic smoke", "performing an epic action sequence"],
+                sty: ["Shot on IMAX 70mm", "Panavision anamorphic cinematography", "High-budget Hollywood film look", "Dark moody dramatic thriller style"],
+                lgt: ["Rembrandt lighting", "dramatic rim light on silhouette", "classic noir shadows"],
+                tech: "--ar 2.39:1 --v 6.0 --stylize 200"
+            },
+            anime: {
+                act: ["invoking a massive magical power", "standing against a sunset horizon", "in a bustling Tokyo street during cherry blossom", "looking into the distance with emotional eyes"],
+                sty: ["Modern Makoto Shinkai style", "Vibrant high-quality anime art", "Retro 90s sailor moon aesthetic", "Ufotable studio fight scene"],
+                lgt: ["vibrant color-saturated lighting", "shining lens flares", "twilight sky glow"],
+                tech: "--ar 16:9 --niji 6 --stylize 250"
+            },
+            logo: {
+                act: ["minimalist vector symbol", "modern tech startup brand icon", "luxury gold emblem", "flat geometric logo design"],
+                sty: ["Clean white background", "Symmetrical composition", "Apple-style branding", "Professional vector graphics"],
+                lgt: ["even studio lighting", "subtle soft gradients", "no shadows"],
+                tech: "--ar 1:1 --no shading photography realistic --v 6.0"
+            },
+            gaming: {
+                act: ["character select screen pose", "inside a dark dungeon with glowing runes", "equipping legendary elemental armor", "battle stance in a 3D open world"],
+                sty: ["Unreal Engine 5.4 game engine render", "Blizzard cinematic cinematic art", "Hyper-detailed 3D modeling", "Ray-traced lighting effects"],
+                lgt: ["dynamic RPG spell lighting", "volumetric fire and magic glow", "global illumination"],
+                tech: "--ar 16:9 --v 6.0 --stop 90"
+            },
+            fashion: {
+                act: ["posing for high-end fashion magazine", "walking a futuristic catwalk", "wearing experimental avant-garde clothing", "surrounded by luxury fabric textures"],
+                sty: ["Vogue editorial photography", "Sharp studio focus", "High-contrast couture aesthetic", "Shot on Hasselblad"],
+                lgt: ["high-key studio lighting", "dramatic strobe effects", "softbox diffusion"],
+                tech: "--ar 4:5 --v 6.0 --stylize 100"
+            },
+            horror: {
+                act: ["slowly emerging from pitch black void", "standing in an abandoned decaying asylum", "shrouded in ancient tattered veils", "surrounded by whispers and shadows"],
+                sty: ["Dark gothic horror aesthetic", "Grainy found-footage style", "Creepy surrealist oil painting", "Silent Hill psychological horror"],
+                lgt: ["single flickering flashlight beam", "eerie moonlight through broken windows", "deep impenetrable shadows"],
+                tech: "--ar 2:3 --v 6.0 --weird 600 --chaos 20"
+            }
         };
 
-        const userLang = (navigator.language || navigator.userLanguage).split('-')[0];
-        const t = (userLang === 'sr' || userLang === 'hr' || userLang === 'bs') ? {
-            wait: "Ukucaj reč i klikni Magic...", alert: "Kopirano!", placeholder: "Npr: Robot, Zmaj, Grad...", history: "Istorija"
-        } : {
-            wait: "Type a word and hit Magic...", alert: "Copied!", placeholder: "e.g. Robot, Dragon, City...", history: "History"
-        };
-
-        document.getElementById('userInput').placeholder = t.placeholder;
-        document.getElementById('finalPrompt').innerText = t.wait;
+        function setCategory(cat, btn) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('cat-active'));
+            btn.classList.add('cat-active');
+            // Suptilna vibracija na dodir
+            if(window.navigator.vibrate) window.navigator.vibrate(10);
+        }
 
         function magicGenerate() {
             const input = document.getElementById('userInput').value;
             if(!input) {
-                alert(userLang === 'sr' ? "Unesite reč!" : "Please enter a word!");
+                alert("Please enter your subject!");
                 return;
             }
 
-            const action = db.actions[Math.floor(Math.random() * db.actions.length)];
-            const style = db.styles[Math.floor(Math.random() * db.styles.length)];
-            const light = db.lighting[Math.floor(Math.random() * db.lighting.length)];
-            const cam = db.cameras[Math.floor(Math.random() * db.cameras.length)];
+            const data = db[currentCategory];
+            const action = data.act[Math.floor(Math.random() * data.act.length)];
+            const style = data.sty[Math.floor(Math.random() * data.sty.length)];
+            const light = data.lgt[Math.floor(Math.random() * data.lgt.length)];
 
-            const final = `${input}, ${action}, ${style}, ${light}, ${cam}, --ar 16:9 --v 6.0 --stylize 300`;
+            const final = `${input}, ${action}, ${style}, ${light}, cinematic perspective, ${data.tech}`;
             
             const display = document.getElementById('finalPrompt');
-            display.style.opacity = 0;
+            display.classList.add('opacity-0', 'scale-95');
+            
             setTimeout(() => {
                 display.innerText = final;
-                display.style.opacity = 1;
-            }, 100);
+                display.classList.remove('opacity-0', 'scale-95');
+                display.classList.add('opacity-100', 'scale-100');
+            }, 300);
 
             saveToStorage(final);
         }
 
-        function copyPrompt() {
-            const txt = document.getElementById('finalPrompt').innerText;
-            if(txt === t.wait) return;
-            navigator.clipboard.writeText(txt);
-            alert(t.alert);
-        }
-
-        // HISTORY & STORAGE LOGIC
         function saveToStorage(text) {
-            let history = JSON.parse(localStorage.getItem('prompts')) || [];
-            // Spreči duplikate jedan za drugim
-            if(history[0] === text) return;
-            history.unshift(text);
-            localStorage.setItem('prompts', JSON.stringify(history.slice(0, 15)));
+            let h = JSON.parse(localStorage.getItem('pro_prompts')) || [];
+            if(h[0] === text) return;
+            h.unshift(text);
+            localStorage.setItem('pro_prompts', JSON.stringify(h.slice(0, 15)));
             renderHistory();
-        }
-
-        function deleteItem(index) {
-            let history = JSON.parse(localStorage.getItem('prompts')) || [];
-            history.splice(index, 1);
-            localStorage.setItem('prompts', JSON.stringify(history));
-            renderHistory();
-        }
-
-        function clearAll() {
-            if(confirm(userLang === 'sr' ? "Obrisati sve?" : "Clear all?")) {
-                localStorage.removeItem('prompts');
-                renderHistory();
-            }
         }
 
         function renderHistory() {
-            const history = JSON.parse(localStorage.getItem('prompts')) || [];
+            const h = JSON.parse(localStorage.getItem('pro_prompts')) || [];
             const box = document.getElementById('historyBox');
             const list = document.getElementById('historyList');
             
-            if(history.length > 0) box.classList.remove('hidden');
+            if(h.length > 0) box.classList.remove('hidden');
             else box.classList.add('hidden');
 
-            list.innerHTML = history.map((item, i) => `
-                <div class="history-card p-4 flex justify-between items-center gap-3">
-                    <div class="truncate text-xs text-slate-400 flex-1" onclick="copySpecific('${item}')">
+            list.innerHTML = h.map((item, i) => `
+                <div class="history-card p-5 flex justify-between items-center gap-4 group">
+                    <div class="truncate text-[11px] text-slate-400 font-medium flex-1" onclick="copySpecific('${item}')">
                         ${item}
                     </div>
-                    <button onclick="deleteItem(${i})" class="w-10 h-10 flex items-center justify-center bg-red-500/10 text-red-500 rounded-xl font-bold">✕</button>
+                    <button onclick="deleteItem(${i})" class="w-8 h-8 flex items-center justify-center bg-red-500/10 text-red-500 rounded-lg text-xs font-bold hover:bg-red-500 hover:text-white transition">✕</button>
                 </div>
             `).join('');
         }
 
+        function deleteItem(i) {
+            let h = JSON.parse(localStorage.getItem('pro_prompts'));
+            h.splice(i, 1);
+            localStorage.setItem('pro_prompts', JSON.stringify(h));
+            renderHistory();
+        }
+
+        function clearAll() {
+            if(confirm("Wipe entire archive?")) {
+                localStorage.removeItem('pro_prompts');
+                renderHistory();
+            }
+        }
+
+        function copyPrompt() {
+            const txt = document.getElementById('finalPrompt').innerText;
+            if(txt.includes('Ready to create')) return;
+            navigator.clipboard.writeText(txt);
+            alert("Copied Masterpiece!");
+        }
+
         function copySpecific(text) {
             navigator.clipboard.writeText(text);
-            alert(t.alert);
+            alert("Archived Prompt Copied!");
         }
 
         renderHistory();
