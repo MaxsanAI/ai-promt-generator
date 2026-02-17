@@ -2,60 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Prompt Architect Ultimate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Prompt Architect Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { background: #020617; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37); }
-        .magic-btn { background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .magic-btn:hover { transform: scale(1.03); box-shadow: 0 0 25px rgba(168, 85, 247, 0.4); }
-        .history-item { transition: all 0.2s; border-left: 3px solid #6366f1; }
-        .history-item:hover { background: rgba(255,255,255,0.05); }
+        body { background: #020617; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .magic-btn { background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899); }
+        .history-card { background: rgba(255, 255, 255, 0.05); border-radius: 16px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); transition: all 0.2s; }
+        .history-card:active { background: rgba(255, 255, 255, 0.1); }
+        button:active { transform: scale(0.96); opacity: 0.9; }
+        input { font-size: 16px !important; }
         .gradient-text { background: linear-gradient(to right, #60a5fa, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 </head>
-<body class="p-4 md:p-10 pb-20">
+<body class="p-4 pb-12">
 
-    <div class="max-w-2xl mx-auto">
-        <div class="text-center mb-8">
-            <h1 class="text-4xl font-extrabold mb-2 gradient-text">PROMPT ARCHITECT</h1>
-            <p id="ui-subtitle" class="text-slate-400 text-sm italic italic">Elite AI Generation Tool</p>
+    <div class="max-w-md mx-auto">
+        <div class="text-center mt-4 mb-6">
+            <h1 class="text-3xl font-extrabold gradient-text">PROMPT ARCHITECT</h1>
+            <p id="ui-subtitle" class="text-slate-500 text-[10px] tracking-[3px] uppercase mt-1">Professional Generator</p>
         </div>
 
-        <div class="glass p-6 rounded-3xl mb-8 sticky top-4 z-50 border-t border-white/10">
-            <label id="ui-label-final" class="block text-[10px] uppercase tracking-[3px] text-blue-400 mb-3 font-bold">Resulting Prompt</label>
-            <div id="finalPrompt" class="text-lg mb-6 min-h-[70px] leading-relaxed font-medium text-slate-100 italic transition-opacity duration-300">
+        <div class="glass p-6 rounded-[2.5rem] mb-6 shadow-2xl border-t border-white/20">
+            <div id="finalPrompt" class="text-xl mb-8 min-h-[120px] leading-snug font-semibold text-slate-100 italic">
                 Waiting for magic...
             </div>
             
-            <div class="grid grid-cols-2 gap-3">
-                <button id="ui-copy-btn" onclick="copyPrompt()" class="bg-slate-800 hover:bg-slate-700 py-4 rounded-2xl font-bold transition-all active:scale-95 shadow-lg">Copy 📋</button>
-                <button id="ui-magic-btn" onclick="magicGenerate()" class="magic-btn py-4 rounded-2xl font-bold transition-all active:scale-95 shadow-lg">MAGIC ✨</button>
+            <div class="grid grid-cols-1 gap-4">
+                <button onclick="magicGenerate()" class="magic-btn w-full py-5 rounded-2xl font-black text-xl shadow-lg uppercase tracking-wider text-white">Magic Generate ✨</button>
+                <button onclick="copyPrompt()" class="bg-slate-800 w-full py-4 rounded-2xl font-bold text-lg border border-slate-700 text-slate-200">Copy Result 📋</button>
             </div>
         </div>
 
-        <div class="glass p-6 rounded-2xl mb-10">
-            <h3 id="ui-h-input" class="font-bold mb-4 text-sm uppercase tracking-wider text-slate-300">Main Concept</h3>
-            <input type="text" id="userInput" placeholder="e.g. Cyberpunk Warrior..." 
-            class="w-full bg-slate-900/50 border border-slate-700 p-4 rounded-xl text-white outline-none focus:ring-2 focus:ring-purple-500 transition-all">
-            <p id="ui-tip" class="text-[10px] text-slate-500 mt-3">Tip: Just one or two words work best!</p>
+        <div class="glass p-5 rounded-2xl mb-8">
+            <label id="ui-h-input" class="block text-xs font-bold text-blue-400 mb-3 uppercase tracking-widest">Main Concept</label>
+            <input type="text" id="userInput" placeholder="Enter word..." 
+            class="w-full bg-slate-900/80 border border-slate-700 p-5 rounded-xl text-white outline-none focus:border-purple-500 shadow-inner">
         </div>
 
-        <div id="historyBox" class="mt-10 hidden">
-            <h3 id="ui-h-history" class="text-slate-400 text-xs font-bold mb-4 uppercase tracking-widest">Recent Masterpieces</h3>
-            <div id="historyList" class="space-y-3">
+        <div id="historyBox" class="hidden">
+            <div class="flex justify-between items-center mb-4 px-2">
+                <h3 id="ui-h-history" class="text-slate-400 text-sm font-bold uppercase tracking-widest text-xs">Recent Masterpieces</h3>
+                <button onclick="clearAll()" class="text-[10px] text-red-500 font-bold uppercase p-2">Clear All</button>
+            </div>
+            <div id="historyList">
                 </div>
         </div>
-
-        <footer class="text-center mt-20 opacity-30 text-[10px] tracking-[4px]">
-            AI ARCHITECT PRO // 2026
-        </footer>
     </div>
 
     <script>
-        // MASIVNA BAZA PROFESIONALNIH TERMINA (Database)
+        // PUN MASIVNI REČNIK IZ PRETHODNIH KORAKA
         const db = {
             actions: [
                 "exploring ancient neon ruins in a deep digital jungle", "floating in a zero-gravity botanical sanctuary",
@@ -85,54 +83,20 @@
             ],
             cameras: [
                 "shot on IMAX 70mm camera", "GoPro POV wide angle action shot", "low angle heroic cinematic perspective",
-                "extreme close-up macro photography", "drone footage from 400ft altitude", "35mm vintage film photography",
-                "satellite thermal imaging view"
+                "extreme close-up macro photography", "drone footage from 400ft altitude", "35mm vintage film photography"
             ]
         };
 
-        // MULTI-LANGUAGE LOGIC
         const userLang = (navigator.language || navigator.userLanguage).split('-')[0];
-        const translations = {
-            en: {
-                subtitle: "Professional AI Prompt Generator",
-                labelFinal: "Resulting Prompt",
-                copyBtn: "Copy 📋",
-                magicBtn: "MAGIC ✨",
-                hInput: "1. Main Concept",
-                tip: "Tip: One or two words work best!",
-                hHistory: "Recent Masterpieces",
-                wait: "Type a word and hit Magic...",
-                alert: "Copied to clipboard!",
-                placeholder: "e.g. Warrior, Dragon, City..."
-            },
-            sr: {
-                subtitle: "Profesionalni generator AI promptova",
-                labelFinal: "Rezultat",
-                copyBtn: "Kopiraj 📋",
-                magicBtn: "MAGIJA ✨",
-                hInput: "1. Glavni koncept",
-                tip: "Savet: Jedna ili dve reči su najbolje!",
-                hHistory: "Poslednji promptovi",
-                wait: "Unesi reč i klikni Magija...",
-                alert: "Kopirano!",
-                placeholder: "Npr: Ratnik, Zmaj, Grad..."
-            }
+        const t = (userLang === 'sr' || userLang === 'hr' || userLang === 'bs') ? {
+            wait: "Ukucaj reč i klikni Magic...", alert: "Kopirano!", placeholder: "Npr: Robot, Zmaj, Grad...", history: "Istorija"
+        } : {
+            wait: "Type a word and hit Magic...", alert: "Copied!", placeholder: "e.g. Robot, Dragon, City...", history: "History"
         };
 
-        const t = (userLang === 'sr' || userLang === 'hr' || userLang === 'bs') ? translations.sr : translations.en;
-
-        // Apply translations
-        document.getElementById('ui-subtitle').innerText = t.subtitle;
-        document.getElementById('ui-label-final').innerText = t.labelFinal;
-        document.getElementById('ui-copy-btn').innerText = t.copyBtn;
-        document.getElementById('ui-magic-btn').innerText = t.magicBtn;
-        document.getElementById('ui-h-input').innerText = t.hInput;
-        document.getElementById('ui-tip').innerText = t.tip;
-        document.getElementById('ui-h-history').innerText = t.hHistory;
-        document.getElementById('finalPrompt').innerText = t.wait;
         document.getElementById('userInput').placeholder = t.placeholder;
+        document.getElementById('finalPrompt').innerText = t.wait;
 
-        // GENERATOR LOGIC
         function magicGenerate() {
             const input = document.getElementById('userInput').value;
             if(!input) {
@@ -147,56 +111,70 @@
 
             const final = `${input}, ${action}, ${style}, ${light}, ${cam}, --ar 16:9 --v 6.0 --stylize 300`;
             
-            // Visual update
             const display = document.getElementById('finalPrompt');
             display.style.opacity = 0;
             setTimeout(() => {
                 display.innerText = final;
                 display.style.opacity = 1;
-            }, 150);
+            }, 100);
 
-            saveHistory(final);
+            saveToStorage(final);
         }
 
         function copyPrompt() {
-            const text = document.getElementById('finalPrompt').innerText;
-            if(text === t.wait) return;
-            navigator.clipboard.writeText(text);
+            const txt = document.getElementById('finalPrompt').innerText;
+            if(txt === t.wait) return;
+            navigator.clipboard.writeText(txt);
             alert(t.alert);
         }
 
-        // HISTORY SYSTEM
-        function saveHistory(text) {
-            let history = JSON.parse(localStorage.getItem('ai_history')) || [];
+        // HISTORY & STORAGE LOGIC
+        function saveToStorage(text) {
+            let history = JSON.parse(localStorage.getItem('prompts')) || [];
+            // Spreči duplikate jedan za drugim
+            if(history[0] === text) return;
             history.unshift(text);
-            history = history.slice(0, 5); // Keep last 5
-            localStorage.setItem('ai_history', JSON.stringify(history));
+            localStorage.setItem('prompts', JSON.stringify(history.slice(0, 15)));
             renderHistory();
         }
 
-        function renderHistory() {
-            const history = JSON.parse(localStorage.getItem('ai_history')) || [];
-            if(history.length === 0) return;
+        function deleteItem(index) {
+            let history = JSON.parse(localStorage.getItem('prompts')) || [];
+            history.splice(index, 1);
+            localStorage.setItem('prompts', JSON.stringify(history));
+            renderHistory();
+        }
 
+        function clearAll() {
+            if(confirm(userLang === 'sr' ? "Obrisati sve?" : "Clear all?")) {
+                localStorage.removeItem('prompts');
+                renderHistory();
+            }
+        }
+
+        function renderHistory() {
+            const history = JSON.parse(localStorage.getItem('prompts')) || [];
             const box = document.getElementById('historyBox');
             const list = document.getElementById('historyList');
-            box.classList.remove('hidden');
             
-            list.innerHTML = history.map(item => `
-                <div class="history-item glass p-4 rounded-xl text-[10px] text-slate-400 cursor-pointer flex justify-between items-center" onclick="copyHistoryItem(this)">
-                    <span class="truncate pr-4">${item}</span>
-                    <span class="text-blue-500 font-bold">COPY</span>
+            if(history.length > 0) box.classList.remove('hidden');
+            else box.classList.add('hidden');
+
+            list.innerHTML = history.map((item, i) => `
+                <div class="history-card p-4 flex justify-between items-center gap-3">
+                    <div class="truncate text-xs text-slate-400 flex-1" onclick="copySpecific('${item}')">
+                        ${item}
+                    </div>
+                    <button onclick="deleteItem(${i})" class="w-10 h-10 flex items-center justify-center bg-red-500/10 text-red-500 rounded-xl font-bold">✕</button>
                 </div>
             `).join('');
         }
 
-        function copyHistoryItem(el) {
-            const text = el.querySelector('span').innerText;
+        function copySpecific(text) {
             navigator.clipboard.writeText(text);
             alert(t.alert);
         }
 
-        // Run history on load
         renderHistory();
     </script>
 </body>
