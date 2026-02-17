@@ -3,221 +3,200 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Prompt Architect Ultimate Pro</title>
+    <title>AI ULTIMATE HUB PRO</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { background: #020617; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; scroll-behavior: smooth; }
-        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .category-scroll::-webkit-scrollbar { display: none; }
-        .cat-btn { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); white-space: nowrap; border: 1px solid rgba(255,255,255,0.05); }
-        .cat-active { background: linear-gradient(135deg, #3b82f6, #2563eb) !important; border-color: #60a5fa !important; transform: scale(1.05); box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); }
-        .magic-btn { background: linear-gradient(135deg, #3b82f6, #8b5cf6, #d946ef); position: relative; overflow: hidden; }
-        .magic-btn::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: rgba(255,255,255,0.1); transform: rotate(45deg); transition: 0.5s; }
-        .magic-btn:active::after { left: 120%; }
-        input { font-size: 16px !important; }
-        .history-card { background: rgba(255, 255, 255, 0.02); border-left: 3px solid #3b82f6; transition: 0.2s; }
-        .history-card:active { background: rgba(255, 255, 255, 0.08); }
-        .neon-text { text-shadow: 0 0 10px rgba(96, 165, 250, 0.5); }
+        :root { --p-blue: #3b82f6; --p-purple: #8b5cf6; --p-pink: #d946ef; }
+        body { background: #010409; color: #f0f6fc; font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; -webkit-tap-highlight-color: transparent; }
+        
+        /* Glassmorphism */
+        .glass { background: rgba(13, 17, 23, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass-card { background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%); border: 1px solid rgba(255,255,255,0.08); }
+
+        /* Navigacija */
+        .nav-active { color: var(--p-blue); filter: drop-shadow(0 0 8px var(--p-blue)); }
+        .nav-active i { transform: translateY(-3px); }
+
+        /* Tabovi */
+        .tab-content { display: none; height: calc(100vh - 80px); overflow-y: auto; padding-bottom: 120px; scrollbar-width: none; }
+        .tab-content::-webkit-scrollbar { display: none; }
+        .tab-active { display: block; animation: slideUp 0.3s ease-out; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Dugmad */
+        .btn-grad { background: linear-gradient(135deg, var(--p-blue), var(--p-purple), var(--p-pink)); background-size: 200% 200%; transition: 0.5s; }
+        .btn-grad:active { background-position: right center; transform: scale(0.98); }
+        
+        .cat-btn { white-space: nowrap; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); font-size: 11px; font-weight: 800; }
+        .cat-active { background: var(--p-blue) !important; box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); border-color: white; }
+
+        input, select { font-size: 16px !important; } /* Stop iOS zoom */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="p-4 pb-20">
+<body>
 
-    <div class="max-w-md mx-auto">
-        <div class="flex justify-between items-center mt-2 mb-8 px-2">
-            <div>
-                <h1 class="text-2xl font-extrabold tracking-tight neon-text italic">PROMPT <span class="text-blue-500 text-3xl italic">PRO</span></h1>
-                <p class="text-[10px] text-slate-500 font-bold tracking-[3px] uppercase">Ultimate AI Generator</p>
-            </div>
-            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center shadow-lg">
-                <span class="text-xs font-black italic">GEN</span>
-            </div>
+    <section id="tab-image" class="tab-content tab-active p-5">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-black tracking-tighter italic italic">IMAGE <span class="text-blue-500">MASTER</span></h1>
+            <p class="text-[9px] uppercase tracking-[4px] text-slate-500 font-bold">Midjourney & DALL-E Engine</p>
+        </header>
+
+        <div class="glass p-6 rounded-[2.5rem] mb-6 relative">
+            <div id="out-image" class="text-lg mb-8 min-h-[120px] font-semibold text-slate-200 italic leading-snug">Spreman za tvoju ideju...</div>
+            <button onclick="copyText('out-image')" class="w-full bg-blue-500/10 py-3 rounded-2xl font-bold text-blue-400 border border-blue-500/20 active:bg-blue-500/30 transition">Kopiraj Prompt 📋</button>
         </div>
 
-        <div class="glass p-7 rounded-[2.5rem] mb-8 border-t border-white/10 relative overflow-hidden text-center">
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-50"></div>
-            <div id="finalPrompt" class="text-lg mb-8 min-h-[120px] leading-relaxed font-semibold text-slate-100 transition-all duration-500 ease-out">
-                Ready to create? Enter a concept below and pick a style.
+        <div class="space-y-4">
+            <input type="text" id="in-image" placeholder="Šta želiš da vidiš?" class="w-full bg-slate-900 border border-slate-800 p-5 rounded-3xl text-white outline-none focus:border-blue-500 shadow-2xl">
+            
+            <div class="flex overflow-x-auto gap-2 no-scrollbar pb-2">
+                <button onclick="setCat('cyber', this)" class="cat-btn cat-active px-6 py-3 rounded-2xl bg-slate-800 uppercase">🚀 Cyber</button>
+                <button onclick="setCat('soft', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-800 uppercase">🌸 Soft</button>
+                <button onclick="setCat('anime', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-800 uppercase">⛩️ Anime</button>
+                <button onclick="setCat('horror', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-800 uppercase">💀 Horror</button>
+                <button onclick="setCat('art', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-800 uppercase">🎨 Art</button>
             </div>
-            <div class="grid grid-cols-1 gap-3">
-                <button onclick="copyPrompt()" class="w-full bg-white/5 py-4 rounded-2xl font-bold text-sm border border-white/10 active:bg-white/10 transition">Copy to Clipboard 📋</button>
+
+            <button onclick="genImage()" class="btn-grad w-full py-6 rounded-[2.5rem] font-black text-xl shadow-2xl tracking-widest">GENERATE MASTERPIECE ✨</button>
+        </div>
+    </section>
+
+    <section id="tab-video" class="tab-content p-5">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-black tracking-tighter italic">VIDEO <span class="text-purple-500">MOTION</span></h1>
+            <p class="text-[9px] uppercase tracking-[4px] text-slate-500 font-bold">Sora & Luma Director</p>
+        </header>
+        <div class="glass p-6 rounded-[2.5rem] mb-6">
+            <div id="out-video" class="text-lg mb-8 min-h-[100px] font-semibold text-slate-200 italic leading-snug">Izaberi pokret kamere...</div>
+            <button onclick="copyText('out-video')" class="w-full bg-purple-500/10 py-3 rounded-2xl font-bold text-purple-400 border border-purple-500/20 active:bg-purple-500/30 transition">Kopiraj Video Prompt 🎬</button>
+        </div>
+        <div class="grid gap-3">
+            <select id="v-move" class="w-full bg-slate-900 border border-slate-800 p-5 rounded-2xl text-white outline-none">
+                <option value="cinematic dolly zoom, pulling out">Dolly Zoom Out</option>
+                <option value="drone shot, orbiting 360 degrees around subject">Orbit 360 Drone</option>
+                <option value="fast motion hyperlapse through clouds">Hyperlapse</option>
+                <option value="first person pov, shaky action cam">POV Action</option>
+            </select>
+            <button onclick="genVideo()" class="btn-grad w-full py-6 rounded-3xl font-black text-lg">GENERATE MOTION PROMPT 🎥</button>
+        </div>
+    </section>
+
+    <section id="tab-char" class="tab-content p-5">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-black tracking-tighter italic">CHAR <span class="text-pink-500">PRO</span></h1>
+            <p class="text-[9px] uppercase tracking-[4px] text-slate-500 font-bold">Consistent Face & Style</p>
+        </header>
+        <div class="grid gap-4">
+            <div class="glass p-5 rounded-3xl border-l-4 border-pink-500">
+                <h3 class="font-bold text-sm mb-2">Character Sheet</h3>
+                <p class="text-[10px] text-slate-400 mb-4">Isti lik iz svih uglova (prednja, bočna, zadnja strana).</p>
+                <button onclick="genChar('Full body character sheet, front view, side view, back view, t-pose, consistent outfit')" class="w-full bg-pink-500/20 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-pink-300">Generate Sheet</button>
             </div>
-        </div>
-
-        <div class="mb-8 relative">
-            <label class="text-[10px] uppercase font-bold text-blue-400 mb-3 ml-4 tracking-widest block">Main Subject</label>
-            <input type="text" id="userInput" placeholder="e.g. Cyberpunk Samurai, Dreamy Girl..." 
-            class="w-full bg-slate-900/50 border border-slate-800 p-5 rounded-3xl text-white outline-none focus:border-blue-500 shadow-2xl placeholder:text-slate-600">
-        </div>
-
-        <div class="mb-8">
-            <label class="text-[10px] uppercase font-bold text-purple-400 mb-4 ml-4 tracking-widest block">Select Engine Style</label>
-            <div class="category-scroll flex overflow-x-auto gap-3 pb-4">
-                <button onclick="setCategory('cyber', this)" class="cat-btn cat-active px-6 py-3 rounded-2xl bg-slate-900 text-xs font-bold uppercase tracking-tighter">🚀 Cyber</button>
-                <button onclick="setCategory('nature', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-900 text-xs font-bold uppercase tracking-tighter">🌸 Nature</button>
-                <button onclick="setCategory('cinema', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-900 text-xs font-bold uppercase tracking-tighter">🎬 Cinema</button>
-                <button onclick="setCategory('anime', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-900 text-xs font-bold uppercase tracking-tighter">⛩️ Anime</button>
-                <button onclick="setCategory('logo', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-900 text-xs font-bold uppercase tracking-tighter">💎 Logo</button>
-                <button onclick="setCategory('gaming', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-900 text-xs font-bold uppercase tracking-tighter">🎮 Gaming</button>
-                <button onclick="setCategory('fashion', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-900 text-xs font-bold uppercase tracking-tighter">👗 Fashion</button>
-                <button onclick="setCategory('horror', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-900 text-xs font-bold uppercase tracking-tighter">💀 Horror</button>
+            <div class="glass p-5 rounded-3xl border-l-4 border-blue-500">
+                <h3 class="font-bold text-sm mb-2">Social Influencer</h3>
+                <p class="text-[10px] text-slate-400 mb-4">Savršen portret za AI Instagram profil.</p>
+                <button onclick="genChar('Hyper-realistic selfie, natural lighting, shot on iPhone, urban background, extremely detailed skin')" class="w-full bg-blue-500/20 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-blue-300">Generate Selfie</button>
             </div>
+            <div id="out-char" class="glass p-5 rounded-3xl min-h-[80px] text-xs text-slate-300 italic"></div>
         </div>
+    </section>
 
-        <button onclick="magicGenerate()" class="magic-btn w-full py-6 rounded-[2rem] font-black text-xl shadow-2xl uppercase tracking-widest text-white mb-12 transform hover:translate-y-[-2px] transition active:scale-95">
-            Generate Magic ✨
+    <section id="tab-social" class="tab-content p-5">
+        <header class="text-center mb-8">
+            <h1 class="text-3xl font-black tracking-tighter italic">VIRAL <span class="text-orange-500">HOOK</span></h1>
+            <p class="text-[9px] uppercase tracking-[4px] text-slate-500 font-bold">TikTok & Reels Content</p>
+        </header>
+        <div class="space-y-4">
+            <input type="text" id="in-social" placeholder="O čemu je tvoj video?" class="w-full bg-slate-900 border border-slate-800 p-5 rounded-2xl text-white outline-none">
+            <button onclick="genSocial()" class="w-full py-5 rounded-2xl bg-orange-600 font-black uppercase text-sm tracking-[2px]">Napravi Viralni Hook 🔥</button>
+            <div id="out-social" class="space-y-2"></div>
+        </div>
+    </section>
+
+    <nav class="fixed bottom-0 left-0 w-full glass p-5 flex justify-around items-center z-[999] border-t border-white/10 rounded-t-[2rem]">
+        <button onclick="showTab('tab-image', this)" class="nav-btn nav-active flex flex-col items-center">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+            <span class="text-[8px] font-bold mt-1 uppercase">Image</span>
         </button>
-
-        <div id="historyBox" class="hidden">
-            <div class="flex justify-between items-center mb-6 px-4">
-                <span class="text-[10px] font-black text-slate-500 uppercase tracking-[4px]">Recent Archive</span>
-                <button onclick="clearAll()" class="text-[10px] text-red-500 font-black uppercase tracking-widest">Wipe All</button>
-            </div>
-            <div id="historyList" class="space-y-3"></div>
-        </div>
-    </div>
+        <button onclick="showTab('tab-video', this)" class="nav-btn flex flex-col items-center">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/></svg>
+            <span class="text-[8px] font-bold mt-1 uppercase">Video</span>
+        </button>
+        <button onclick="showTab('tab-char', this)" class="nav-btn flex flex-col items-center">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+            <span class="text-[8px] font-bold mt-1 uppercase">Char</span>
+        </button>
+        <button onclick="showTab('tab-social', this)" class="nav-btn flex flex-col items-center">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg>
+            <span class="text-[8px] font-bold mt-1 uppercase">Social</span>
+        </button>
+    </nav>
 
     <script>
-        let currentCategory = 'cyber';
+        let curImgCat = 'cyber';
 
-        const db = {
-            cyber: {
-                act: ["connected to a bio-digital mainframe", "walking through a glitching neon marketplace", "riding a hover-bike in high-speed neo-tokyo", "surrounded by floating holographic advertisements"],
-                sty: ["Cyberpunk 2077 aesthetic", "Hyper-detailed synthwave art", "Futuristic neon-noir cinematic", "Blade Runner 2049 visual style"],
-                lgt: ["flickering neon pink and electric blue lighting", "volumetric laser fog", "harsh artificial night shadows"],
-                tech: "--ar 21:9 --v 6.0 --style raw --chaos 10"
-            },
-            nature: {
-                act: ["surrounded by bioluminescent spirit animals", "meditating under a giant glowing willow tree", "walking through a field of crystal-flowers", "drifting in a peaceful ethereal forest lake"],
-                sty: ["Dreamy fantasy landscape", "Studio Ghibli lush scenery", "Kodak Portra 400 soft photography", "Ethereal oil painting style"],
-                lgt: ["warm golden hour sunbeams", "soft diffused morning mist", "magical floating particles lighting"],
-                tech: "--ar 3:2 --v 6.0 --stylize 400"
-            },
-            cinema: {
-                act: ["in a high-stakes dramatic encounter", "captured in a wide-angle heroic stance", "shrouded in mysterious cinematic smoke", "performing an epic action sequence"],
-                sty: ["Shot on IMAX 70mm", "Panavision anamorphic cinematography", "High-budget Hollywood film look", "Dark moody dramatic thriller style"],
-                lgt: ["Rembrandt lighting", "dramatic rim light on silhouette", "classic noir shadows"],
-                tech: "--ar 2.39:1 --v 6.0 --stylize 200"
-            },
-            anime: {
-                act: ["invoking a massive magical power", "standing against a sunset horizon", "in a bustling Tokyo street during cherry blossom", "looking into the distance with emotional eyes"],
-                sty: ["Modern Makoto Shinkai style", "Vibrant high-quality anime art", "Retro 90s sailor moon aesthetic", "Ufotable studio fight scene"],
-                lgt: ["vibrant color-saturated lighting", "shining lens flares", "twilight sky glow"],
-                tech: "--ar 16:9 --niji 6 --stylize 250"
-            },
-            logo: {
-                act: ["minimalist vector symbol", "modern tech startup brand icon", "luxury gold emblem", "flat geometric logo design"],
-                sty: ["Clean white background", "Symmetrical composition", "Apple-style branding", "Professional vector graphics"],
-                lgt: ["even studio lighting", "subtle soft gradients", "no shadows"],
-                tech: "--ar 1:1 --no shading photography realistic --v 6.0"
-            },
-            gaming: {
-                act: ["character select screen pose", "inside a dark dungeon with glowing runes", "equipping legendary elemental armor", "battle stance in a 3D open world"],
-                sty: ["Unreal Engine 5.4 game engine render", "Blizzard cinematic cinematic art", "Hyper-detailed 3D modeling", "Ray-traced lighting effects"],
-                lgt: ["dynamic RPG spell lighting", "volumetric fire and magic glow", "global illumination"],
-                tech: "--ar 16:9 --v 6.0 --stop 90"
-            },
-            fashion: {
-                act: ["posing for high-end fashion magazine", "walking a futuristic catwalk", "wearing experimental avant-garde clothing", "surrounded by luxury fabric textures"],
-                sty: ["Vogue editorial photography", "Sharp studio focus", "High-contrast couture aesthetic", "Shot on Hasselblad"],
-                lgt: ["high-key studio lighting", "dramatic strobe effects", "softbox diffusion"],
-                tech: "--ar 4:5 --v 6.0 --stylize 100"
-            },
-            horror: {
-                act: ["slowly emerging from pitch black void", "standing in an abandoned decaying asylum", "shrouded in ancient tattered veils", "surrounded by whispers and shadows"],
-                sty: ["Dark gothic horror aesthetic", "Grainy found-footage style", "Creepy surrealist oil painting", "Silent Hill psychological horror"],
-                lgt: ["single flickering flashlight beam", "eerie moonlight through broken windows", "deep impenetrable shadows"],
-                tech: "--ar 2:3 --v 6.0 --weird 600 --chaos 20"
-            }
-        };
-
-        function setCategory(cat, btn) {
-            currentCategory = cat;
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('cat-active'));
-            btn.classList.add('cat-active');
-            // Suptilna vibracija na dodir
-            if(window.navigator.vibrate) window.navigator.vibrate(10);
+        function showTab(id, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('tab-active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-active'));
+            document.getElementById(id).classList.add('tab-active');
+            btn.classList.add('nav-active');
+            if(window.navigator.vibrate) window.navigator.vibrate(15);
         }
 
-        function magicGenerate() {
-            const input = document.getElementById('userInput').value;
-            if(!input) {
-                alert("Please enter your subject!");
-                return;
-            }
-
-            const data = db[currentCategory];
-            const action = data.act[Math.floor(Math.random() * data.act.length)];
-            const style = data.sty[Math.floor(Math.random() * data.sty.length)];
-            const light = data.lgt[Math.floor(Math.random() * data.lgt.length)];
-
-            const final = `${input}, ${action}, ${style}, ${light}, cinematic perspective, ${data.tech}`;
-            
-            const display = document.getElementById('finalPrompt');
-            display.classList.add('opacity-0', 'scale-95');
-            
-            setTimeout(() => {
-                display.innerText = final;
-                display.classList.remove('opacity-0', 'scale-95');
-                display.classList.add('opacity-100', 'scale-100');
-            }, 300);
-
-            saveToStorage(final);
+        function setCat(c, b) {
+            curImgCat = c;
+            document.querySelectorAll('.cat-btn').forEach(x => x.classList.remove('cat-active'));
+            b.classList.add('cat-active');
         }
 
-        function saveToStorage(text) {
-            let h = JSON.parse(localStorage.getItem('pro_prompts')) || [];
-            if(h[0] === text) return;
-            h.unshift(text);
-            localStorage.setItem('pro_prompts', JSON.stringify(h.slice(0, 15)));
-            renderHistory();
+        function genImage() {
+            const val = document.getElementById('in-image').value || 'Subject';
+            const db = {
+                cyber: ", digital glitch, neon-noir cyberpunk city, hyper-detailed, 8k --ar 16:9 --v 6.0",
+                soft: ", cinematic morning mist, studio ghibli dreamscape, pastel colors, soft bokeh --ar 3:2 --stylize 250",
+                anime: ", high-octane anime visual, niji 6 model, sharp lines, cinematic glow --niji 6",
+                horror: ", eerie atmosphere, dark moody gothic style, hyper-realistic shadows, uncanny --weird 600 --ar 2:3",
+                art: ", palette knife oil painting, thick texture, masterpiece, vibrant strokes --stylize 750"
+            };
+            document.getElementById('out-image').innerText = val + db[curImgCat];
         }
 
-        function renderHistory() {
-            const h = JSON.parse(localStorage.getItem('pro_prompts')) || [];
-            const box = document.getElementById('historyBox');
-            const list = document.getElementById('historyList');
-            
-            if(h.length > 0) box.classList.remove('hidden');
-            else box.classList.add('hidden');
-
-            list.innerHTML = h.map((item, i) => `
-                <div class="history-card p-5 flex justify-between items-center gap-4 group">
-                    <div class="truncate text-[11px] text-slate-400 font-medium flex-1" onclick="copySpecific('${item}')">
-                        ${item}
-                    </div>
-                    <button onclick="deleteItem(${i})" class="w-8 h-8 flex items-center justify-center bg-red-500/10 text-red-500 rounded-lg text-xs font-bold hover:bg-red-500 hover:text-white transition">✕</button>
-                </div>
-            `).join('');
+        function genVideo() {
+            const m = document.getElementById('v-move').value;
+            document.getElementById('out-video').innerText = `${m}, high-fidelity cinematic video, 4k, professional color grading, movement by Sora AI.`;
         }
 
-        function deleteItem(i) {
-            let h = JSON.parse(localStorage.getItem('pro_prompts'));
-            h.splice(i, 1);
-            localStorage.setItem('pro_prompts', JSON.stringify(h));
-            renderHistory();
+        function genChar(t) {
+            const val = document.getElementById('in-image').value || 'Character';
+            const res = `${val}, ${t}, masterpiece quality, consistent character features --v 6.0`;
+            document.getElementById('out-char').innerText = res;
+            navigator.clipboard.writeText(res);
+            alert("Kopirano u memoriju!");
         }
 
-        function clearAll() {
-            if(confirm("Wipe entire archive?")) {
-                localStorage.removeItem('pro_prompts');
-                renderHistory();
-            }
+        function genSocial() {
+            const val = document.getElementById('in-social').value || 'AI trendovi';
+            const hooks = [
+                `"Niko vam nije rekao za ovo kod ${val}..."`,
+                `"Ovo je tajna koju kriju o ${val}!"`,
+                `"Prestani da radiš ovo ako te zanima ${val}!"`
+            ];
+            document.getElementById('out-social').innerHTML = hooks.map(h => `<div class="glass-card p-4 rounded-xl text-xs font-bold" onclick="copyTextDirect('${h}')">${h}</div>`).join('');
         }
 
-        function copyPrompt() {
-            const txt = document.getElementById('finalPrompt').innerText;
-            if(txt.includes('Ready to create')) return;
-            navigator.clipboard.writeText(txt);
-            alert("Copied Masterpiece!");
+        function copyText(id) {
+            const t = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(t);
+            alert("Spreman za paste!");
         }
 
-        function copySpecific(text) {
-            navigator.clipboard.writeText(text);
-            alert("Archived Prompt Copied!");
+        function copyTextDirect(t) {
+            navigator.clipboard.writeText(t);
+            alert("Hook kopiran!");
         }
-
-        renderHistory();
     </script>
 </body>
 </html>
