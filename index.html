@@ -9,141 +9,216 @@
     <style>
         :root { --p-blue: #3b82f6; --p-purple: #8b5cf6; --p-pink: #d946ef; }
         body { background: #010409; color: #f0f6fc; font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; -webkit-tap-highlight-color: transparent; }
-        
-        /* Glassmorphism */
         .glass { background: rgba(13, 17, 23, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .glass-card { background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0) 100%); border: 1px solid rgba(255,255,255,0.08); }
-
-        /* Navigacija */
         .nav-active { color: var(--p-blue); filter: drop-shadow(0 0 8px var(--p-blue)); }
-        .nav-active i { transform: translateY(-3px); }
-
-        /* Tabovi */
-        .tab-content { display: none; height: calc(100vh - 80px); overflow-y: auto; padding-bottom: 120px; scrollbar-width: none; }
-        .tab-content::-webkit-scrollbar { display: none; }
+        .tab-content { display: none; height: calc(100vh - 80px); overflow-y: auto; padding-bottom: 120px; }
         .tab-active { display: block; animation: slideUp 0.3s ease-out; }
-
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Dugmad */
-        .btn-grad { background: linear-gradient(135deg, var(--p-blue), var(--p-purple), var(--p-pink)); background-size: 200% 200%; transition: 0.5s; }
-        .btn-grad:active { background-position: right center; transform: scale(0.98); }
-        
-        .cat-btn { white-space: nowrap; transition: 0.3s; border: 1px solid rgba(255,255,255,0.1); font-size: 11px; font-weight: 800; }
+        .btn-grad { background: linear-gradient(135deg, var(--p-blue), var(--p-purple), var(--p-pink)); }
+        .cat-btn { white-space: nowrap; transition: 0.3s; border: 1px solid rgba(255, 255, 255, 0.1); font-size: 11px; font-weight: 800; }
         .cat-active { background: var(--p-blue) !important; box-shadow: 0 0 20px rgba(59, 130, 246, 0.4); border-color: white; }
-
-        input, select { font-size: 16px !important; } /* Stop iOS zoom */
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body>
 
     <section id="tab-image" class="tab-content tab-active p-5">
-        <header class="text-center mb-8">
-            <h1 class="text-3xl font-black tracking-tighter italic italic">IMAGE <span class="text-blue-500">MASTER</span></h1>
-            <p class="text-[9px] uppercase tracking-[4px] text-slate-500 font-bold">Midjourney & DALL-E Engine</p>
+        <header class="text-center mb-6">
+            <h1 class="text-3xl font-black italic tracking-tighter uppercase">Image <span class="text-blue-500 text-4xl">Pro</span></h1>
+            <p id="ui-img-sub" class="text-[9px] uppercase tracking-[4px] text-slate-500 font-bold">Ultra-Realistic Engine</p>
         </header>
 
-        <div class="glass p-6 rounded-[2.5rem] mb-6 relative">
-            <div id="out-image" class="text-lg mb-8 min-h-[120px] font-semibold text-slate-200 italic leading-snug">Spreman za tvoju ideju...</div>
-            <button onclick="copyText('out-image')" class="w-full bg-blue-500/10 py-3 rounded-2xl font-bold text-blue-400 border border-blue-500/20 active:bg-blue-500/30 transition">Kopiraj Prompt 📋</button>
+        <div class="glass p-6 rounded-[2.5rem] mb-6 relative border-t border-white/10 shadow-2xl">
+            <div id="out-image" class="text-lg mb-8 min-h-[140px] font-semibold text-slate-200 italic leading-snug">Waiting for your vision...</div>
+            <button id="btn-copy-img" onclick="copyText('out-image')" class="w-full bg-blue-500/10 py-4 rounded-2xl font-bold text-blue-400 border border-blue-500/20 active:bg-blue-500/40 transition">Copy Prompt 📋</button>
         </div>
 
         <div class="space-y-4">
-            <input type="text" id="in-image" placeholder="Šta želiš da vidiš?" class="w-full bg-slate-900 border border-slate-800 p-5 rounded-3xl text-white outline-none focus:border-blue-500 shadow-2xl">
+            <input type="text" id="in-image" placeholder="e.g. Cyberpunk Warrior..." class="w-full bg-slate-900 border border-slate-800 p-5 rounded-3xl text-white outline-none focus:border-blue-500 shadow-2xl">
             
             <div class="flex overflow-x-auto gap-2 no-scrollbar pb-2">
                 <button onclick="setCat('cyber', this)" class="cat-btn cat-active px-6 py-3 rounded-2xl bg-slate-800 uppercase">🚀 Cyber</button>
-                <button onclick="setCat('soft', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-800 uppercase">🌸 Soft</button>
+                <button onclick="setCat('nature', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-800 uppercase">🌸 Nature</button>
                 <button onclick="setCat('anime', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-800 uppercase">⛩️ Anime</button>
+                <button onclick="setCat('portrait', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-800 uppercase">👤 Portrait</button>
                 <button onclick="setCat('horror', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-800 uppercase">💀 Horror</button>
-                <button onclick="setCat('art', this)" class="cat-btn px-6 py-3 rounded-2xl bg-slate-800 uppercase">🎨 Art</button>
             </div>
 
-            <button onclick="genImage()" class="btn-grad w-full py-6 rounded-[2.5rem] font-black text-xl shadow-2xl tracking-widest">GENERATE MASTERPIECE ✨</button>
+            <button id="btn-gen-img" onclick="genImage()" class="btn-grad w-full py-6 rounded-[2.5rem] font-black text-xl shadow-2xl tracking-widest text-white uppercase">Generate ✨</button>
         </div>
     </section>
 
     <section id="tab-video" class="tab-content p-5">
-        <header class="text-center mb-8">
-            <h1 class="text-3xl font-black tracking-tighter italic">VIDEO <span class="text-purple-500">MOTION</span></h1>
-            <p class="text-[9px] uppercase tracking-[4px] text-slate-500 font-bold">Sora & Luma Director</p>
+        <header class="text-center mb-6">
+            <h1 class="text-3xl font-black italic tracking-tighter uppercase">Motion <span class="text-purple-500 text-4xl">Pro</span></h1>
         </header>
-        <div class="glass p-6 rounded-[2.5rem] mb-6">
-            <div id="out-video" class="text-lg mb-8 min-h-[100px] font-semibold text-slate-200 italic leading-snug">Izaberi pokret kamere...</div>
-            <button onclick="copyText('out-video')" class="w-full bg-purple-500/10 py-3 rounded-2xl font-bold text-purple-400 border border-purple-500/20 active:bg-purple-500/30 transition">Kopiraj Video Prompt 🎬</button>
+        <div class="glass p-6 rounded-[2.5rem] mb-6 border-t border-white/10 shadow-2xl">
+            <div id="out-video" class="text-lg mb-8 min-h-[120px] font-semibold text-slate-200 italic leading-snug">Select movement...</div>
+            <button id="btn-copy-vid" onclick="copyText('out-video')" class="w-full bg-purple-500/10 py-4 rounded-2xl font-bold text-purple-400 border border-purple-500/20 active:bg-purple-500/30">Copy Video Prompt 🎬</button>
         </div>
-        <div class="grid gap-3">
+        <div class="space-y-3">
             <select id="v-move" class="w-full bg-slate-900 border border-slate-800 p-5 rounded-2xl text-white outline-none">
-                <option value="cinematic dolly zoom, pulling out">Dolly Zoom Out</option>
-                <option value="drone shot, orbiting 360 degrees around subject">Orbit 360 Drone</option>
-                <option value="fast motion hyperlapse through clouds">Hyperlapse</option>
-                <option value="first person pov, shaky action cam">POV Action</option>
+                <option value="cinematic dolly zoom, pulling out of the scene">Dolly Zoom Out</option>
+                <option value="drone flyover view, orbiting 360 degrees around the subject">360 Drone Orbit</option>
+                <option value="first person POV, shaky action camera, high-speed movement">POV Action Cam</option>
+                <option value="slow pan from left to right, focusing on details">Cinematic Slow Pan</option>
+                <option value="hyper-lapse through time, clouds moving fast in background">Cloud Hyperlapse</option>
             </select>
-            <button onclick="genVideo()" class="btn-grad w-full py-6 rounded-3xl font-black text-lg">GENERATE MOTION PROMPT 🎥</button>
+            <button id="btn-set-vid" onclick="genVideo()" class="w-full py-6 rounded-3xl bg-slate-800 font-black uppercase text-sm border border-slate-700">Set Motion ✨</button>
         </div>
     </section>
 
     <section id="tab-char" class="tab-content p-5">
-        <header class="text-center mb-8">
-            <h1 class="text-3xl font-black tracking-tighter italic">CHAR <span class="text-pink-500">PRO</span></h1>
-            <p class="text-[9px] uppercase tracking-[4px] text-slate-500 font-bold">Consistent Face & Style</p>
+        <header class="text-center mb-6">
+            <h1 class="text-3xl font-black italic tracking-tighter uppercase">Char <span class="text-pink-500 text-4xl">Cref</span></h1>
         </header>
-        <div class="grid gap-4">
-            <div class="glass p-5 rounded-3xl border-l-4 border-pink-500">
-                <h3 class="font-bold text-sm mb-2">Character Sheet</h3>
-                <p class="text-[10px] text-slate-400 mb-4">Isti lik iz svih uglova (prednja, bočna, zadnja strana).</p>
-                <button onclick="genChar('Full body character sheet, front view, side view, back view, t-pose, consistent outfit')" class="w-full bg-pink-500/20 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-pink-300">Generate Sheet</button>
+        <div class="space-y-4">
+            <div onclick="genChar('Passport-style portrait, looking at camera, neutral expression, studio lighting, hyper-realistic skin texture')" class="glass p-5 rounded-3xl border-l-4 border-pink-500 active:scale-95 transition cursor-pointer">
+                <h3 id="ui-char-title1" class="font-black text-xs uppercase text-pink-400">Portrait Ref</h3>
+                <p id="ui-char-desc1" class="text-[10px] text-slate-400">Perfect for initial face.</p>
             </div>
-            <div class="glass p-5 rounded-3xl border-l-4 border-blue-500">
-                <h3 class="font-bold text-sm mb-2">Social Influencer</h3>
-                <p class="text-[10px] text-slate-400 mb-4">Savršen portret za AI Instagram profil.</p>
-                <button onclick="genChar('Hyper-realistic selfie, natural lighting, shot on iPhone, urban background, extremely detailed skin')" class="w-full bg-blue-500/20 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-blue-300">Generate Selfie</button>
+            <div onclick="genChar('Full body character sheet, front view, side view, back view, standing, wearing consistent outfit, neutral background')" class="glass p-5 rounded-3xl border-l-4 border-blue-500 active:scale-95 transition cursor-pointer">
+                <h3 id="ui-char-title2" class="font-black text-xs uppercase text-blue-400">Character Sheet</h3>
+                <p id="ui-char-desc2" class="text-[10px] text-slate-400">For --cref (all angles).</p>
             </div>
-            <div id="out-char" class="glass p-5 rounded-3xl min-h-[80px] text-xs text-slate-300 italic"></div>
+            <div id="out-char" class="glass p-6 rounded-3xl min-h-[100px] text-xs text-slate-300 italic border-t border-white/5 shadow-xl">Result will appear here...</div>
         </div>
     </section>
 
     <section id="tab-social" class="tab-content p-5">
         <header class="text-center mb-8">
-            <h1 class="text-3xl font-black tracking-tighter italic">VIRAL <span class="text-orange-500">HOOK</span></h1>
-            <p class="text-[9px] uppercase tracking-[4px] text-slate-500 font-bold">TikTok & Reels Content</p>
+            <h1 class="text-3xl font-black italic tracking-tighter text-orange-500 uppercase">Viral Tool</h1>
         </header>
         <div class="space-y-4">
-            <input type="text" id="in-social" placeholder="O čemu je tvoj video?" class="w-full bg-slate-900 border border-slate-800 p-5 rounded-2xl text-white outline-none">
-            <button onclick="genSocial()" class="w-full py-5 rounded-2xl bg-orange-600 font-black uppercase text-sm tracking-[2px]">Napravi Viralni Hook 🔥</button>
-            <div id="out-social" class="space-y-2"></div>
+            <input type="text" id="in-social" placeholder="Your topic..." class="w-full bg-slate-900 border border-slate-800 p-5 rounded-3xl text-white outline-none">
+            <button id="btn-gen-social" onclick="genSocial()" class="w-full py-5 rounded-3xl bg-orange-600 font-black uppercase text-sm shadow-xl">Generate Hooks 🔥</button>
+            <div id="out-social" class="space-y-3 pt-4"></div>
         </div>
     </section>
 
-    <nav class="fixed bottom-0 left-0 w-full glass p-5 flex justify-around items-center z-[999] border-t border-white/10 rounded-t-[2rem]">
+    <nav class="fixed bottom-0 left-0 w-full glass p-5 flex justify-around items-center z-[999] border-t border-white/10 rounded-t-[2.5rem]">
         <button onclick="showTab('tab-image', this)" class="nav-btn nav-active flex flex-col items-center">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
-            <span class="text-[8px] font-bold mt-1 uppercase">Image</span>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            <span class="text-[8px] font-black mt-1 uppercase">Image</span>
         </button>
         <button onclick="showTab('tab-video', this)" class="nav-btn flex flex-col items-center">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/></svg>
-            <span class="text-[8px] font-bold mt-1 uppercase">Video</span>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+            <span class="text-[8px] font-black mt-1 uppercase">Video</span>
         </button>
         <button onclick="showTab('tab-char', this)" class="nav-btn flex flex-col items-center">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
-            <span class="text-[8px] font-bold mt-1 uppercase">Char</span>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            <span class="text-[8px] font-black mt-1 uppercase">Char</span>
         </button>
         <button onclick="showTab('tab-social', this)" class="nav-btn flex flex-col items-center">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 11H7V9h2v2zm4 0h-2V9h2v2zm4 0h-2V9h2v2z"/></svg>
-            <span class="text-[8px] font-bold mt-1 uppercase">Social</span>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9l-4 4v-4H3a2 2 0 01-2-2V10a2 2 0 012-2h2M9 21h3v-3H9v3z"/></svg>
+            <span class="text-[8px] font-black mt-1 uppercase">Social</span>
         </button>
     </nav>
 
     <script>
         let curImgCat = 'cyber';
+        const userLang = (navigator.language || navigator.userLanguage).toLowerCase().split('-')[0];
+
+        // MASTER TRANSLATIONS ENGINE (HIGH eCPM REGIONS)
+        const translations = {
+            en: {
+                imgW: "Waiting for your vision...", imgC: "Copy Prompt 📋", gen: "Generate Magic ✨",
+                vidW: "Select camera movement...", vidC: "Copy Video Prompt 🎬", vidS: "Set Motion ✨",
+                charW: "Result will appear here...", charD1: "Perfect for initial face.", charD2: "For --cref (all angles).",
+                socP: "Topic...", socB: "Generate Hooks 🔥", cop: "Copied!"
+            },
+            de: { // Germany, Austria
+                imgW: "Warte auf deine Vision...", imgC: "Kopieren 📋", gen: "Magie Erzeugen ✨",
+                vidW: "Kamerabewegung wählen...", vidC: "Video-Prompt Kopieren 🎬", vidS: "Bewegung Setzen ✨",
+                charW: "Ergebnis erscheint hier...", charD1: "Perfekt für das Gesicht.", charD2: "Für --cref Winkel.",
+                socP: "Thema...", socB: "Hooks Generieren 🔥", cop: "Kopiert!"
+            },
+            fr: { // France, Switzerland
+                imgW: "En attente de votre vision...", imgC: "Copier 📋", gen: "Générer la Magie ✨",
+                vidW: "Choisir le mouvement...", vidC: "Copier le Prompt Vidéo 🎬", vidS: "Régler le Mouvement ✨",
+                charW: "Le résultat apparaîtra ici...", charD1: "Parfait pour le visage.", charD2: "Pour les angles --cref.",
+                socP: "Sujet...", socB: "Générer des Hooks 🔥", cop: "Copié !"
+            },
+            es: { // Spain
+                imgW: "Esperando tu visión...", imgC: "Copiar 📋", gen: "Generar Magia ✨",
+                vidW: "Seleccionar movimiento...", vidC: "Copiar Prompt de Video 🎬", vidS: "Fijar Movimiento ✨",
+                charW: "El resultado aparecerá aquí...", charD1: "Perfecto para el rostro.", charD2: "Para ángulos --cref.",
+                socP: "Tema...", socB: "Generar Ganchos 🔥", cop: "¡Copiado!"
+            },
+            it: { // Italy
+                imgW: "In attesa della tua visione...", imgC: "Copia 📋", gen: "Genera Magia ✨",
+                vidW: "Seleziona movimento...", vidC: "Copia Prompt Video 🎬", vidS: "Imposta Movimento ✨",
+                charW: "Il risultato apparirà qui...", charD1: "Perfetto per il viso.", charD2: "Per angoli --cref.",
+                socP: "Argomento...", socB: "Genera Ganci 🔥", cop: "Copiato!"
+            },
+            nl: { // Netherlands
+                imgW: "Wachten op je visie...", imgC: "Kopiëren 📋", gen: "Magie Genereren ✨",
+                vidW: "Selecteer beweging...", vidC: "Video Prompt Kopiëren 🎬", vidS: "Beweging Instellen ✨",
+                charW: "Resultaat verschijnt hier...", charD1: "Perfect voor het gezicht.", charD2: "Voor --cref hoeken.",
+                socP: "Onderwerp...", socB: "Hooks Genereren 🔥", cop: "Gekopieerd!"
+            },
+            hr: { // Balkan Region
+                imgW: "Čekam tvoju ideju...", imgC: "Kopiraj 📋", gen: "Generiraj ✨",
+                vidW: "Izaberi pokret...", vidC: "Kopiraj Video 🎬", vidS: "Postavi Pokret ✨",
+                charW: "Rezultat će biti ovdje...", charD1: "Idealno za lice.", charD2: "Za sve kutove.",
+                socP: "Tema...", socB: "Generiraj Hookove 🔥", cop: "Kopirano!"
+            }
+        };
+
+        const t = translations[userLang] || translations.en;
+
+        // Apply Localized UI
+        document.getElementById('out-image').innerText = t.imgW;
+        document.getElementById('btn-copy-img').innerText = t.imgC;
+        document.getElementById('btn-gen-img').innerText = t.gen;
+        document.getElementById('out-video').innerText = t.vidW;
+        document.getElementById('btn-copy-vid').innerText = t.vidC;
+        document.getElementById('btn-set-vid').innerText = t.vidS;
+        document.getElementById('out-char').innerText = t.charW;
+        document.getElementById('ui-char-desc1').innerText = t.charD1;
+        document.getElementById('ui-char-desc2').innerText = t.charD2;
+        document.getElementById('in-social').placeholder = t.socP;
+        document.getElementById('btn-gen-social').innerText = t.socB;
+
+        const db = {
+            cyber: {
+                actions: ["exploring neon-drenched futuristic streets", "glitching through holographic reality", "inside a high-tech data center", "connected to neural cyberware cables"],
+                styles: ["Cyberpunk 2077 aesthetic", "Unreal Engine 5.4 photorealistic render", "8k UHD cinematic film scan", "Vaporwave glitch art"],
+                light: ["neon cyan and magenta dual lighting", "volumetric laser beams", "flickering city lights"],
+                tech: "--ar 16:9 --v 6.0 --style raw"
+            },
+            nature: {
+                actions: ["walking in a field of dreamy lavender", "surrounded by morning mist", "floating in a peaceful sunlit lake"],
+                styles: ["Studio Ghibli aesthetic", "Soft bokeh photography", "Kodak Portra 400 soft tones", "Ethereal fine art oil painting"],
+                light: ["golden hour warm sunlight", "soft diffused natural light"],
+                tech: "--ar 3:2 --v 6.0 --stylize 250"
+            },
+            anime: {
+                actions: ["invoking massive magical power", "standing against a sunset horizon", "in a cozy Japanese room during cherry blossom"],
+                styles: ["Modern Makoto Shinkai style", "Vibrant cel-shaded animation", "Retro 90s anime aesthetic"],
+                light: ["vibrant color-saturated lighting", "shining lens flares"],
+                tech: "--niji 6 --ar 16:9"
+            },
+            portrait: {
+                actions: ["extreme close-up face shot", "wearing ornate high-fashion jewelry", "hyper-detailed skin texture"],
+                styles: ["Photorealistic 8k studio shot", "Commercial fashion editorial", "85mm lens photography"],
+                light: ["Rembrandt studio lighting", "dramatic rim light"],
+                tech: "--ar 4:5 --v 6.0 --stylize 150"
+            },
+            horror: {
+                actions: ["emerging from pitch black shadows", "in a haunted abandoned asylum", "shrouded in ancient tattered veils"],
+                styles: ["Dark moody gothic horror art", "Grainy found-footage style", "Silent Hill atmosphere"],
+                light: ["single flickering candlelight", "eerie cold moonlight"],
+                tech: "--weird 600 --ar 2:3 --chaos 20"
+            }
+        };
 
         function showTab(id, btn) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('tab-active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-active'));
             document.getElementById(id).classList.add('tab-active');
             btn.classList.add('nav-active');
-            if(window.navigator.vibrate) window.navigator.vibrate(15);
+            if(window.navigator.vibrate) window.navigator.vibrate(10);
         }
 
         function setCat(c, b) {
@@ -154,48 +229,46 @@
 
         function genImage() {
             const val = document.getElementById('in-image').value || 'Subject';
-            const db = {
-                cyber: ", digital glitch, neon-noir cyberpunk city, hyper-detailed, 8k --ar 16:9 --v 6.0",
-                soft: ", cinematic morning mist, studio ghibli dreamscape, pastel colors, soft bokeh --ar 3:2 --stylize 250",
-                anime: ", high-octane anime visual, niji 6 model, sharp lines, cinematic glow --niji 6",
-                horror: ", eerie atmosphere, dark moody gothic style, hyper-realistic shadows, uncanny --weird 600 --ar 2:3",
-                art: ", palette knife oil painting, thick texture, masterpiece, vibrant strokes --stylize 750"
-            };
-            document.getElementById('out-image').innerText = val + db[curImgCat];
+            const data = db[curImgCat];
+            const a = data.actions[Math.floor(Math.random()*data.actions.length)];
+            const s = data.styles[Math.floor(Math.random()*data.styles.length)];
+            const l = data.light[Math.floor(Math.random()*data.light.length)];
+            document.getElementById('out-image').innerText = `${val}, ${a}, ${s}, ${l}, cinematic, ${data.tech}`;
         }
 
         function genVideo() {
             const m = document.getElementById('v-move').value;
-            document.getElementById('out-video').innerText = `${m}, high-fidelity cinematic video, 4k, professional color grading, movement by Sora AI.`;
+            document.getElementById('out-video').innerText = `${m}, 4k, cinematic textures, ultra-realistic movement, professional color grading.`;
         }
 
-        function genChar(t) {
+        function genChar(p) {
             const val = document.getElementById('in-image').value || 'Character';
-            const res = `${val}, ${t}, masterpiece quality, consistent character features --v 6.0`;
+            const res = `${val}, ${p}, masterpiece, 8k --v 6.0`;
             document.getElementById('out-char').innerText = res;
             navigator.clipboard.writeText(res);
-            alert("Kopirano u memoriju!");
+            alert(t.cop);
         }
 
         function genSocial() {
-            const val = document.getElementById('in-social').value || 'AI trendovi';
+            const val = document.getElementById('in-social').value || 'this topic';
             const hooks = [
-                `"Niko vam nije rekao za ovo kod ${val}..."`,
-                `"Ovo je tajna koju kriju o ${val}!"`,
-                `"Prestani da radiš ovo ako te zanima ${val}!"`
+                `"The secret about ${val}..."`,
+                `"Why your ${val} fails..."`,
+                `"3 tips for ${val}..."`
             ];
-            document.getElementById('out-social').innerHTML = hooks.map(h => `<div class="glass-card p-4 rounded-xl text-xs font-bold" onclick="copyTextDirect('${h}')">${h}</div>`).join('');
+            document.getElementById('out-social').innerHTML = hooks.map(h => `<div class="glass p-4 rounded-xl text-xs font-bold active:bg-blue-900" onclick="copyTextDirect('${h}')">${h}</div>`).join('');
         }
 
         function copyText(id) {
-            const t = document.getElementById(id).innerText;
-            navigator.clipboard.writeText(t);
-            alert("Spreman za paste!");
+            const txt = document.getElementById(id).innerText;
+            if(txt.length < 15) return;
+            navigator.clipboard.writeText(txt);
+            alert(t.cop);
         }
 
-        function copyTextDirect(t) {
-            navigator.clipboard.writeText(t);
-            alert("Hook kopiran!");
+        function copyTextDirect(tx) {
+            navigator.clipboard.writeText(tx);
+            alert(t.cop);
         }
     </script>
 </body>
