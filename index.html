@@ -7,140 +7,197 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body { background: #020617; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .tag-btn { transition: all 0.2s; cursor: pointer; border: 1px solid #1e293b; background: #0f172a; }
-        .tag-active { background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important; border-color: transparent !important; color: white !important; }
-        .history-card { background: rgba(255, 255, 255, 0.03); border-left: 4px solid #3b82f6; }
+        body { background: #020617; color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37); }
+        .magic-btn { background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .magic-btn:hover { transform: scale(1.03); box-shadow: 0 0 25px rgba(168, 85, 247, 0.4); }
+        .history-item { transition: all 0.2s; border-left: 3px solid #6366f1; }
+        .history-item:hover { background: rgba(255,255,255,0.05); }
         .gradient-text { background: linear-gradient(to right, #60a5fa, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 </head>
 <body class="p-4 md:p-10 pb-20">
 
-    <div class="max-w-4xl mx-auto">
+    <div class="max-w-2xl mx-auto">
         <div class="text-center mb-8">
-            <h1 class="text-4xl font-extrabold mb-2 gradient-text">Prompt Architect Pro</h1>
-            <p id="ui-subtitle" class="text-slate-400 text-sm italic">Mastering AI generation...</p>
+            <h1 class="text-4xl font-extrabold mb-2 gradient-text">PROMPT ARCHITECT</h1>
+            <p id="ui-subtitle" class="text-slate-400 text-sm italic italic">Elite AI Generation Tool</p>
         </div>
 
-        <div class="glass p-6 rounded-3xl mb-8 sticky top-4 z-50 shadow-2xl">
-            <label id="ui-label-final" class="block text-[10px] uppercase tracking-[3px] text-blue-400 mb-2 font-bold">PROMPT</label>
-            <div id="finalPrompt" class="text-lg mb-4 min-h-[50px] font-medium text-slate-100 italic">...</div>
+        <div class="glass p-6 rounded-3xl mb-8 sticky top-4 z-50 border-t border-white/10">
+            <label id="ui-label-final" class="block text-[10px] uppercase tracking-[3px] text-blue-400 mb-3 font-bold">Resulting Prompt</label>
+            <div id="finalPrompt" class="text-lg mb-6 min-h-[70px] leading-relaxed font-medium text-slate-100 italic transition-opacity duration-300">
+                Waiting for magic...
+            </div>
             
             <div class="grid grid-cols-2 gap-3">
-                <button id="ui-copy-btn" onclick="copyPrompt()" class="bg-gradient-to-r from-blue-600 to-blue-700 py-3 rounded-xl font-bold transition-all active:scale-95 shadow-lg">Copy 📋</button>
-                <button id="ui-save-btn" onclick="saveToHistory()" class="bg-gradient-to-r from-purple-600 to-purple-700 py-3 rounded-xl font-bold transition-all active:scale-95 shadow-lg">Save ⭐</button>
+                <button id="ui-copy-btn" onclick="copyPrompt()" class="bg-slate-800 hover:bg-slate-700 py-4 rounded-2xl font-bold transition-all active:scale-95 shadow-lg">Copy 📋</button>
+                <button id="ui-magic-btn" onclick="magicGenerate()" class="magic-btn py-4 rounded-2xl font-bold transition-all active:scale-95 shadow-lg">MAGIC ✨</button>
             </div>
         </div>
 
-        <div class="grid gap-6">
-            <div class="glass p-5 rounded-2xl">
-                <h3 id="ui-h-subject" class="font-bold mb-3 text-blue-400">Subject</h3>
-                <input type="text" id="subject" class="w-full bg-slate-900 border border-slate-700 p-4 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none" oninput="updatePreview()">
-            </div>
+        <div class="glass p-6 rounded-2xl mb-10">
+            <h3 id="ui-h-input" class="font-bold mb-4 text-sm uppercase tracking-wider text-slate-300">Main Concept</h3>
+            <input type="text" id="userInput" placeholder="e.g. Cyberpunk Warrior..." 
+            class="w-full bg-slate-900/50 border border-slate-700 p-4 rounded-xl text-white outline-none focus:ring-2 focus:ring-purple-500 transition-all">
+            <p id="ui-tip" class="text-[10px] text-slate-500 mt-3">Tip: Just one or two words work best!</p>
+        </div>
 
-            <div class="glass p-5 rounded-2xl">
-                <h3 id="ui-h-style" class="font-bold mb-3 text-purple-400">Style & FX</h3>
-                <div class="flex flex-wrap gap-2">
-                    <div class="tag-btn px-4 py-2 rounded-xl text-xs" onclick="toggleTag(this, 'style', 'Cinematic Panavision')">Cinematic</div>
-                    <div class="tag-btn px-4 py-2 rounded-xl text-xs" onclick="toggleTag(this, 'style', 'Hyper-realistic 8k')">Realistic</div>
-                    <div class="tag-btn px-4 py-2 rounded-xl text-xs" onclick="toggleTag(this, 'style', 'Cyberpunk Neon')">Cyberpunk</div>
-                    <div class="tag-btn px-4 py-2 rounded-xl text-xs" onclick="toggleTag(this, 'style', 'Unreal Engine 5 Render')">UE5</div>
+        <div id="historyBox" class="mt-10 hidden">
+            <h3 id="ui-h-history" class="text-slate-400 text-xs font-bold mb-4 uppercase tracking-widest">Recent Masterpieces</h3>
+            <div id="historyList" class="space-y-3">
                 </div>
-            </div>
-
-            <div class="mt-10">
-                <h3 id="ui-h-history" class="text-xl font-bold mb-4 flex items-center gap-2">
-                    History <span class="text-xs bg-slate-700 px-2 py-1 rounded">Local Storage</span>
-                </h3>
-                <div id="historyList" class="grid gap-3">
-                    </div>
-                <button id="ui-clear-btn" onclick="clearHistory()" class="mt-4 text-xs text-slate-500 underline">Clear all history</button>
-            </div>
         </div>
+
+        <footer class="text-center mt-20 opacity-30 text-[10px] tracking-[4px]">
+            AI ARCHITECT PRO // 2026
+        </footer>
     </div>
 
     <script>
-        const userLang = (navigator.language || navigator.userLanguage).split('-')[0];
-        
-        const langData = {
-            en: { subtitle: "Professional AI Generator Tool", labelFinal: "Your Final Prompt", copyBtn: "Copy 📋", saveBtn: "Save ⭐", hSubject: "1. Subject", hStyle: "2. Style", hHistory: "Recent Prompts", wait: "Type something...", alertCopy: "Copied!", alertSave: "Saved to history!", clear: "Clear all history" },
-            sr: { subtitle: "Profesionalni alat za AI", labelFinal: "Tvoj Finalni Prompt", copyBtn: "Kopiraj 📋", saveBtn: "Sačuvaj ⭐", hSubject: "1. Subjekat", hStyle: "2. Stilovi", hHistory: "Istorija promptova", wait: "Upiši nešto...", alertCopy: "Kopirano!", alertSave: "Sačuvano u istoriju!", clear: "Obriši istoriju" },
-            es: { subtitle: "Herramienta de IA", labelFinal: "Prompt Final", copyBtn: "Copiar 📋", saveBtn: "Guardar ⭐", hSubject: "1. Sujeto", hStyle: "2. Estilos", hHistory: "Historial", wait: "Escribe algo...", alertCopy: "¡Copiado!", alertSave: "¡Guardado!", clear: "Borrar historial" }
-            // Možeš dodati još jezika po istom šablonu
+        // MASIVNA BAZA PROFESIONALNIH TERMINA (Database)
+        const db = {
+            actions: [
+                "exploring ancient neon ruins in a deep digital jungle", "floating in a zero-gravity botanical sanctuary",
+                "walking through a heavy futuristic rainstorm in Neo-Tokyo", "surrounded by swirling ethereal spirits and magic dust",
+                "standing on the edge of a cosmic black hole horizon", "dissolving into a million glowing digital butterflies",
+                "captured in a moment of extreme kinetic energy and speed", "meditating inside a giant crystal cathedral",
+                "sprinting through a steampunk industrial city at sunset", "melting into a pool of liquid iridescent chrome",
+                "shrouded in mysterious volumetric fog and cinematic shadows", "performing an ancient ritual with glowing embers",
+                "flying through a nebula made of liquid silk and stars", "emerging from a 90s vintage television glitch screen",
+                "submerged in a high-tech underwater laboratory", "frozen in time during a massive explosion of neon flowers"
+            ],
+            styles: [
+                "Unreal Engine 5.4 photorealistic render", "8k UHD cinematic film scan, Kodak Portra 400",
+                "Studio Ghibli aesthetic, lush hand-painted scenery", "Cyberpunk 2077 neon-noir aesthetic",
+                "Intricate dark fantasy, oil on canvas, Greg Rutkowski style", "Minimalist 3D isometric vector art",
+                "Anamorphic widescreen cinematography, 35mm lens", "Hyper-detailed claymation and stop-motion style",
+                "Surrealist masterpiece by Salvador Dali", "Retro-futurism, 1950s pulp sci-fi magazine cover",
+                "National Geographic documentary style, raw footage", "Futuristic architecture, Zaha Hadid style",
+                "Glitch art, VHS aesthetic, vaporwave colors", "Renaissance marble sculpture, dramatic lighting"
+            ],
+            lighting: [
+                "golden hour sunlight with natural lens flare", "cinematic rim lighting, high contrast noir",
+                "bioluminescent glow from organic neon sources", "soft diffused high-end studio lighting",
+                "dramatic top-down moody cinematic shadows", "volumetric sunbeams filtering through dust particles",
+                "neon pink and cyan dual lighting setup", "underwater caustic light reflections",
+                "warm flickering candlelight with deep shadows"
+            ],
+            cameras: [
+                "shot on IMAX 70mm camera", "GoPro POV wide angle action shot", "low angle heroic cinematic perspective",
+                "extreme close-up macro photography", "drone footage from 400ft altitude", "35mm vintage film photography",
+                "satellite thermal imaging view"
+            ]
         };
 
-        const t = langData[userLang] || langData.en;
+        // MULTI-LANGUAGE LOGIC
+        const userLang = (navigator.language || navigator.userLanguage).split('-')[0];
+        const translations = {
+            en: {
+                subtitle: "Professional AI Prompt Generator",
+                labelFinal: "Resulting Prompt",
+                copyBtn: "Copy 📋",
+                magicBtn: "MAGIC ✨",
+                hInput: "1. Main Concept",
+                tip: "Tip: One or two words work best!",
+                hHistory: "Recent Masterpieces",
+                wait: "Type a word and hit Magic...",
+                alert: "Copied to clipboard!",
+                placeholder: "e.g. Warrior, Dragon, City..."
+            },
+            sr: {
+                subtitle: "Profesionalni generator AI promptova",
+                labelFinal: "Rezultat",
+                copyBtn: "Kopiraj 📋",
+                magicBtn: "MAGIJA ✨",
+                hInput: "1. Glavni koncept",
+                tip: "Savet: Jedna ili dve reči su najbolje!",
+                hHistory: "Poslednji promptovi",
+                wait: "Unesi reč i klikni Magija...",
+                alert: "Kopirano!",
+                placeholder: "Npr: Ratnik, Zmaj, Grad..."
+            }
+        };
 
-        // UI Initialization
+        const t = (userLang === 'sr' || userLang === 'hr' || userLang === 'bs') ? translations.sr : translations.en;
+
+        // Apply translations
         document.getElementById('ui-subtitle').innerText = t.subtitle;
         document.getElementById('ui-label-final').innerText = t.labelFinal;
         document.getElementById('ui-copy-btn').innerText = t.copyBtn;
-        document.getElementById('ui-save-btn').innerText = t.saveBtn;
-        document.getElementById('ui-h-subject').innerText = t.hSubject;
-        document.getElementById('ui-h-style').innerText = t.hStyle;
+        document.getElementById('ui-magic-btn').innerText = t.magicBtn;
+        document.getElementById('ui-h-input').innerText = t.hInput;
+        document.getElementById('ui-tip').innerText = t.tip;
         document.getElementById('ui-h-history').innerText = t.hHistory;
-        document.getElementById('ui-clear-btn').innerText = t.clear;
         document.getElementById('finalPrompt').innerText = t.wait;
+        document.getElementById('userInput').placeholder = t.placeholder;
 
-        let config = { subject: "", style: [] };
-        let history = JSON.parse(localStorage.getItem('prompt_history')) || [];
+        // GENERATOR LOGIC
+        function magicGenerate() {
+            const input = document.getElementById('userInput').value;
+            if(!input) {
+                alert(userLang === 'sr' ? "Unesite reč!" : "Please enter a word!");
+                return;
+            }
 
-        function updatePreview() {
-            config.subject = document.getElementById('subject').value;
-            let final = config.subject || t.wait;
-            if(config.style.length > 0) final += ", " + config.style.join(", ");
-            document.getElementById('finalPrompt').innerText = final;
-        }
+            const action = db.actions[Math.floor(Math.random() * db.actions.length)];
+            const style = db.styles[Math.floor(Math.random() * db.styles.length)];
+            const light = db.lighting[Math.floor(Math.random() * db.lighting.length)];
+            const cam = db.cameras[Math.floor(Math.random() * db.cameras.length)];
 
-        function toggleTag(el, category, value) {
-            el.classList.toggle('tag-active');
-            let index = config[category].indexOf(value);
-            if(index > -1) config[category].splice(index, 1);
-            else config[category].push(value);
-            updatePreview();
+            const final = `${input}, ${action}, ${style}, ${light}, ${cam}, --ar 16:9 --v 6.0 --stylize 300`;
+            
+            // Visual update
+            const display = document.getElementById('finalPrompt');
+            display.style.opacity = 0;
+            setTimeout(() => {
+                display.innerText = final;
+                display.style.opacity = 1;
+            }, 150);
+
+            saveHistory(final);
         }
 
         function copyPrompt() {
-            navigator.clipboard.writeText(document.getElementById('finalPrompt').innerText);
-            alert(t.alertCopy);
+            const text = document.getElementById('finalPrompt').innerText;
+            if(text === t.wait) return;
+            navigator.clipboard.writeText(text);
+            alert(t.alert);
         }
 
-        // HISTORY LOGIC
-        function saveToHistory() {
-            const current = document.getElementById('finalPrompt').innerText;
-            if(current === t.wait) return;
-            
-            history.unshift(current); // Dodaj na početak
-            if(history.length > 10) history.pop(); // Drži max 10
-            
-            localStorage.setItem('prompt_history', JSON.stringify(history));
+        // HISTORY SYSTEM
+        function saveHistory(text) {
+            let history = JSON.parse(localStorage.getItem('ai_history')) || [];
+            history.unshift(text);
+            history = history.slice(0, 5); // Keep last 5
+            localStorage.setItem('ai_history', JSON.stringify(history));
             renderHistory();
-            alert(t.alertSave);
         }
 
         function renderHistory() {
+            const history = JSON.parse(localStorage.getItem('ai_history')) || [];
+            if(history.length === 0) return;
+
+            const box = document.getElementById('historyBox');
             const list = document.getElementById('historyList');
-            list.innerHTML = history.map(p => `
-                <div class="history-card p-4 rounded-xl text-sm text-slate-300 flex justify-between items-center">
-                    <span class="truncate mr-4">${p}</span>
-                    <button onclick="copySpecific('${p}')" class="text-blue-400 font-bold">Copy</button>
+            box.classList.remove('hidden');
+            
+            list.innerHTML = history.map(item => `
+                <div class="history-item glass p-4 rounded-xl text-[10px] text-slate-400 cursor-pointer flex justify-between items-center" onclick="copyHistoryItem(this)">
+                    <span class="truncate pr-4">${item}</span>
+                    <span class="text-blue-500 font-bold">COPY</span>
                 </div>
             `).join('');
         }
 
-        function copySpecific(text) {
+        function copyHistoryItem(el) {
+            const text = el.querySelector('span').innerText;
             navigator.clipboard.writeText(text);
-            alert(t.alertCopy);
+            alert(t.alert);
         }
 
-        function clearHistory() {
-            history = [];
-            localStorage.removeItem('prompt_history');
-            renderHistory();
-        }
-
-        renderHistory(); // Pozovi pri učitavanju
+        // Run history on load
+        renderHistory();
     </script>
 </body>
 </html>
